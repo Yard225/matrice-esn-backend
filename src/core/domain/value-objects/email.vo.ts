@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+// import { InvalidEmailException } from '../exceptions/invalid-email.exception';
 
 export class Email {
   private readonly _value: string;
@@ -8,14 +8,14 @@ export class Email {
   }
 
   public static create(email: string): Email {
-    if (!email) {
-      throw new BadRequestException('Email is required');
-    }
+    //     if (!email) {
+    //       throw new InvalidEmailException(email, 'Email is required');
+    //     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      throw new BadRequestException('Invalid email format');
-    }
+    //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    //     if (!emailRegex.test(email)) {
+    //       throw new InvalidEmailException(email, 'Invalid email format pattern');
+    //     }
 
     return new Email(email.toLowerCase().trim());
   }
@@ -24,19 +24,19 @@ export class Email {
     return this._value;
   }
 
-  public getDomain(): string {
-    return this._value.split('@')[1];
-  }
+  //   public getDomain(): string {
+  //     return this._value.split('@')[1];
+  //   }
 
-  public getLocalPart(): string {
-    return this._value.split('@')[0];
-  }
+  //   public getLocalPart(): string {
+  //     return this._value.split('@')[0];
+  //   }
 
-  public equals(other: Email): boolean {
-    return this._value === other._value;
-  }
+  //   public equals(other: Email): boolean {
+  //     return this._value === other._value;
+  //   }
 
-  public toString(): string {
-    return this._value;
-  }
+  //   public toString(): string {
+  //     return this._value;
+  //   }
 }

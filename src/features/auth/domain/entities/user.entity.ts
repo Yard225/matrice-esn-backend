@@ -1,107 +1,92 @@
-import { AuditableEntity } from '@/core/domain/entities/auditable.entity';
-import { Email } from '@/core/domain/value-objects/email.vo';
-import { Column, Entity } from 'typeorm';
+// import { AuditableEntity } from '@/core/domain/entities/auditable.entity';
+// import { Email } from '@/core/domain/value-objects/email.vo';
 
-@Entity('users')
-export class User extends AuditableEntity {
-  @Column({ type: 'varchar', length: 255, unique: true })
-  private _email: string;
+// type UserProps = {
+//   email: string;
+//   firstName: string;
+//   lastName: string;
+//   password: string;
+//   role: string;
+//   isActive: boolean;
+//   department?: string;
+//   lastLoginAt?: Date;
+//   resetPasswordToken?: string;
+//   resetPasswordExpires?: Date;
+// };
 
-  @Column({ type: 'varchar', length: 100 })
-  firstName: string;
+// export class User extends AuditableEntity {
+//   // private _email: string;
+//   // firstName: string;
+//   // lastName: string;
+//   // password: string;
+//   // role: string;
+//   // department?: string;
+//   // isActive: boolean;
+//   // lastLoginAt?: Date;
+//   // resetPasswordToken?: string;
+//   // resetPasswordExpires?: Date;
 
-  @Column({ type: 'varchar', length: 100 })
-  lastName: string;
+//   constructor(
+//     public props: UserProps,
+//     createdBy?: string,
+//   ) {
+//     super(createdBy);
+//   }
 
-  @Column({ type: 'varchar', length: 255 })
-  password: string;
+//   // get email(): Email {
+//   //   return Email.create(this.props.email);
+//   // }
 
-  @Column({ type: 'varchar', length: 50, default: 'user' })
-  role: string;
+//   // set email(email: Email) {
+//   //   this.props.email = email.value;
+//   // }
 
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  department?: string;
+//   get fullName(): string {
+//     return `${this.props.firstName} ${this.props.lastName}`;
+//   }
 
-  @Column({ type: 'boolean', default: true })
-  isActive: boolean;
+//   public updateLastLogin(): void {
+//     this.props.lastLoginAt = new Date();
+//   }
 
-  @Column({ type: 'timestamp', nullable: true })
-  lastLoginAt?: Date;
+//   public deactivate(): void {
+//     this.props.isActive = false;
+//   }
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  resetPasswordToken?: string;
+//   public activate(): void {
+//     this.props.isActive = true;
+//   }
 
-  @Column({ type: 'timestamp', nullable: true })
-  resetPasswordExpires?: Date;
+//   public setResetPasswordToken(
+//     token: string,
+//     expiresInMinutes: number = 60,
+//   ): void {
+//     this.props.resetPasswordToken = token;
+//     this.props.resetPasswordExpires = new Date(
+//       Date.now() + expiresInMinutes * 60 * 1000,
+//     );
+//   }
 
-  constructor(
-    email: Email,
-    firstName: string,
-    lastName: string,
-    password: string,
-    role: string = 'user',
-    department?: string,
-    createdBy?: string
-  ) {
-    super(createdBy);
-    this._email = email.value;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.password = password;
-    this.role = role;
-    this.department = department;
-    this.isActive = true;
-  }
+//   public clearResetPasswordToken(): void {
+//     this.props.resetPasswordToken = undefined;
+//     this.props.resetPasswordExpires = undefined;
+//   }
 
-  get email(): Email {
-    return Email.create(this._email);
-  }
+//   public isResetPasswordTokenValid(token: string): boolean {
+//     return (
+//       this.props.resetPasswordToken === token &&
+//       this.props.resetPasswordExpires &&
+//       this.props.resetPasswordExpires > new Date()
+//     );
+//   }
 
-  set email(email: Email) {
-    this._email = email.value;
-  }
-
-  get fullName(): string {
-    return `${this.firstName} ${this.lastName}`;
-  }
-
-  public updateLastLogin(): void {
-    this.lastLoginAt = new Date();
-  }
-
-  public deactivate(): void {
-    this.isActive = false;
-  }
-
-  public activate(): void {
-    this.isActive = true;
-  }
-
-  public setResetPasswordToken(token: string, expiresInMinutes: number = 60): void {
-    this.resetPasswordToken = token;
-    this.resetPasswordExpires = new Date(Date.now() + expiresInMinutes * 60 * 1000);
-  }
-
-  public clearResetPasswordToken(): void {
-    this.resetPasswordToken = undefined;
-    this.resetPasswordExpires = undefined;
-  }
-
-  public isResetPasswordTokenValid(token: string): boolean {
-    return (
-      this.resetPasswordToken === token &&
-      this.resetPasswordExpires &&
-      this.resetPasswordExpires > new Date()
-    );
-  }
-
-  public updateProfile(
-    firstName?: string,
-    lastName?: string,
-    department?: string
-  ): void {
-    if (firstName) this.firstName = firstName;
-    if (lastName) this.lastName = lastName;
-    if (department !== undefined) this.department = department;
-  }
-}
+//   public updateProfile(
+//     firstName?: string,
+//     lastName?: string,
+//     department?: string,
+//   ): void {
+//     if (firstName) this.props.firstName = firstName;
+//     if (lastName) this.props.lastName = lastName;
+//     if (department !== undefined) this.props.department = department;
+//   }
+// }

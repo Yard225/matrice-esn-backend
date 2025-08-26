@@ -1,78 +1,121 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { IUseCase } from '@/core/application/interfaces/use-case.interface';
-import { Email } from '@/core/domain/value-objects/email.vo';
-import { InvalidCredentialsException } from '../../domain/exceptions/invalid-credentials.exception';
-import { UserNotFoundException } from '../../domain/exceptions/user-not-found.exception';
-import { IUserRepository } from '../../domain/repositories/user.repository.interface';
-import { IPasswordService } from '../../domain/services/password.service.interface';
-import { ITokenService } from '../../domain/services/token.service.interface';
-import { AuthResponseDto } from '../dtos/auth-response.dto';
-import { LoginDto } from '../dtos/login.dto';
+// // Note: Injectable sera ajouté par le module lors de l'injection
+// import { Email } from '@/core/domain/value-objects/email.vo';
+// import { AccountDeactivatedException } from '../../domain/exceptions/account-deactivated.exception';
+// import { InvalidCredentialsException } from '../../domain/exceptions/invalid-credentials.exception';
+// import { UserNotFoundException } from '../../domain/exceptions/user-not-found.exception';
+// import { IUserRepository } from '../../domain/repositories/user.repository.interface';
+// import { IPasswordService } from '../../domain/services/password.service.interface';
+// import { ITokenService } from '../../domain/services/token.service.interface';
+// import { IAuthConfigService } from '../../domain/services/auth-config.service.interface';
+// import {
+//   AuthResponseModel,
+//   UserPayloadModel,
+// } from '../models/auth-response.model';
+// import { LoginModel } from '../models/login.model';
+// import { ILoginUseCase } from '../interfaces/login-use-case.interface';
+// import { IUseCase } from '@/core/application/interfaces/use-case.interface';
 
-@Injectable()
-export class LoginUseCase implements IUseCase<LoginDto, AuthResponseDto> {
-  constructor(
-    private readonly userRepository: IUserRepository,
-    private readonly passwordService: IPasswordService,
-    private readonly tokenService: ITokenService,
-  ) {}
+// type Request = {
+//   email: string;
+//   password: string;
+//   clientIp?: string;
+//   userAgent?: string;
+// };
 
-  async execute(request: LoginDto): Promise<AuthResponseDto> {
-    const { email, password, clientIp, userAgent } = request;
+// type Response = {
+//   accessToken: string;
+//   refreshToken: string;
+//   tokenType: string;
+//   expiresIn: number;
+//   user: Payload;
+// };
 
-    // Find user by email
-    const emailVo = Email.create(email);
-    const user = await this.userRepository.findByEmail(emailVo);
-    
-    if (!user) {
-      throw new UserNotFoundException(email, 'email');
-    }
+// type Payload = {
+//   id: string;
+//   email: string;
+//   firstName: string;
+//   lastName: string;
+//   fullName: string;
+//   role: string;
+//   department?: string;
+//   isActive: boolean;
+//   lastLoginAt?: Date;
+//   createdAt: Date;
+//   updatedAt: Date;
+// };
 
-    // Check if user is active
-    if (!user.isActive) {
-      throw new UnauthorizedException('Account is deactivated');
-    }
+// export class LoginUseCase implements IUseCase<Request, Response> {
+//   constructor(
+//     private readonly userRepository: IUserRepository,
+//     private readonly passwordService: IPasswordService,
+//     private readonly tokenService: ITokenService,
+//     private readonly authConfigService: IAuthConfigService,
+//   ) {}
 
-    // Verify password
-    const isPasswordValid = await this.passwordService.verify(password, user.password);
-    if (!isPasswordValid) {
-      throw new InvalidCredentialsException();
-    }
+//   async execute(request: Request): Promise<AuthResponseModel> {
+//     const { email, password, clientIp, userAgent } = request;
+//     // Note: clientIp et userAgent peuvent être utilisés pour l'audit/sécurité dans une version future
 
-    // Update last login
-    user.updateLastLogin();
-    await this.userRepository.save(user);
+//     // Find user by email
+//     const emailVo = Email.create(email);
+//     const user = await this.userRepository.findByEmail(emailVo);
 
-    // Generate tokens
-    const payload = {
-      sub: user.id,
-      email: user.email.value,
-      role: user.role,
-      firstName: user.firstName,
-      lastName: user.lastName,
-    };
+//     if (!user) {
+//       throw new UserNotFoundException(email, 'email');
+//     }
 
-    const accessToken = await this.tokenService.generateAccessToken(payload);
-    const refreshToken = await this.tokenService.generateRefreshToken(payload);
+//     // Check if user is active
+//     if (!user.isActive) {
+//       throw new AccountDeactivatedException(user.id);
+//     }
 
-    return new AuthResponseDto({
-      accessToken,
-      refreshToken,
-      tokenType: 'Bearer',
-      expiresIn: 900, // 15 minutes
-      user: {
-        id: user.id,
-        email: user.email.value,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        fullName: user.fullName,
-        role: user.role,
-        department: user.department,
-        isActive: user.isActive,
-        lastLoginAt: user.lastLoginAt,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      },
-    });
-  }
-}
+//     // Verify password
+//     const isPasswordValid = await this.passwordService.verify(
+//       password,
+//       user.password,
+//     );
+
+//     if (!isPasswordValid) {
+//       throw new InvalidCredentialsException();
+//     }
+
+//     // Update last login
+//     user.updateLastLogin();
+//     await this.userRepository.save(user);
+
+//     // Generate tokens
+//     const payload = {
+//       sub: user.id,
+//       email: user.email.value,
+//       role: user.role,
+//       firstName: user.firstName,
+//       lastName: user.lastName,
+//     };
+
+//     const accessToken = await this.tokenService.generateAccessToken(payload);
+//     const refreshToken = await this.tokenService.generateRefreshToken(payload);
+
+//     // Get configuration from domain service
+//     const authConfig = this.authConfigService.getAuthConfig();
+
+//     return new AuthResponseModel({
+//       accessToken,
+//       refreshToken,
+//       tokenType: authConfig.tokenType,
+//       expiresIn: authConfig.accessTokenExpiresIn,
+//       user: new UserPayloadModel({
+//         id: user.id,
+//         email: user.email.value,
+//         firstName: user.firstName,
+//         lastName: user.lastName,
+//         fullName: user.fullName,
+//         role: user.role,
+//         department: user.department,
+//         isActive: user.isActive,
+//         lastLoginAt: user.lastLoginAt,
+//         createdAt: user.createdAt,
+//         updatedAt: user.updatedAt,
+//       }),
+//     });
+//   }
+// }

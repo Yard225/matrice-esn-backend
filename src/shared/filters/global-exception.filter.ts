@@ -10,6 +10,10 @@ import { Request, Response } from 'express';
 import { ApiResponseDto } from '@/core/application/dtos/api-response.dto';
 import { BusinessRuleException } from '@/core/domain/exceptions/business-rule.exception';
 import { DomainException } from '@/core/domain/exceptions/domain.exception';
+import { InvalidEmailException } from '@/core/domain/exceptions/invalid-email.exception';
+import { AccountDeactivatedException } from '../../features/auth/domain/exceptions/account-deactivated.exception';
+import { InvalidCredentialsException } from '../../features/auth/domain/exceptions/invalid-credentials.exception';
+import { UserNotFoundException } from '../../features/auth/domain/exceptions/user-not-found.exception';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -40,6 +44,26 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         errorCode = errorObj.code || errorCode;
         details = errorObj.details;
       }
+    } else if (exception instanceof InvalidEmailException) {
+      status = HttpStatus.BAD_REQUEST;
+      errorCode = exception.code;
+      message = exception.message;
+      details = exception.details;
+    } else if (exception instanceof UserNotFoundException) {
+      status = HttpStatus.NOT_FOUND;
+      errorCode = exception.code;
+      message = exception.message;
+      details = exception.details;
+    } else if (exception instanceof InvalidCredentialsException) {
+      status = HttpStatus.UNAUTHORIZED;
+      errorCode = exception.code;
+      message = exception.message;
+      details = exception.details;
+    } else if (exception instanceof AccountDeactivatedException) {
+      status = HttpStatus.FORBIDDEN;
+      errorCode = exception.code;
+      message = exception.message;
+      details = exception.details;
     } else if (exception instanceof BusinessRuleException) {
       status = HttpStatus.BAD_REQUEST;
       errorCode = exception.code;
