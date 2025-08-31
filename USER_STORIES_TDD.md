@@ -53,13 +53,13 @@
 
 #### Use Cases (Core Logic)
 - `LoginUseCase`
-  - ✅ Connexion réussie avec credentials valides
-  - ✅ Échec avec email inexistant
-  - ✅ Échec avec mot de passe incorrect
-  - ✅ Échec avec compte désactivé
-  - ✅ Mise à jour lastLoginAt
-  - ✅ Génération des tokens JWT
-  - ✅ Configuration auth récupérée
+  - ✅ Connexion réussie avec credentials valides √
+  - ✅ Échec avec email inexistant √
+  - ✅ Échec avec mot de passe incorrect √
+  - ✅ Échec avec compte désactivé √
+  - ✅ Mise à jour lastLoginAt √
+  - ✅ Génération des tokens JWT √
+  - ✅ Configuration auth récupérée 
 
 #### Application Services Interfaces
 - `IPasswordService`

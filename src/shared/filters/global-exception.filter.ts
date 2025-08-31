@@ -7,13 +7,13 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { ApiResponseDto } from '@/core/application/dtos/api-response.dto';
-import { BusinessRuleException } from '@/core/domain/exceptions/business-rule.exception';
-import { DomainException } from '@/core/domain/exceptions/domain.exception';
-import { InvalidEmailException } from '@/core/domain/exceptions/invalid-email.exception';
-import { AccountDeactivatedException } from '../../features/auth/domain/exceptions/account-deactivated.exception';
-import { InvalidCredentialsException } from '../../features/auth/domain/exceptions/invalid-credentials.exception';
-import { UserNotFoundException } from '../../features/auth/domain/exceptions/user-not-found.exception';
+import { ApiResponseDto } from '@/core/controllers/dtos/api-response.dto';
+import { BusinessRuleException } from '@/core/base/exceptions/BusinessRule.exception';
+import { DomainException } from '@/core/base/exceptions/Domain.exception';
+import { InvalidEmailException } from '@/core/base/exceptions/InvalidEmail.exception';
+import { AccountDeactivatedException } from '../../features/auth/domain/exceptions/AccountDeactivated.exception';
+import { InvalidCredentialsException } from '../../features/users/exceptions/invalid-credentials.exception';
+import { UserNotFoundException } from '../../features/users/exceptions/user-not-found.exception';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {

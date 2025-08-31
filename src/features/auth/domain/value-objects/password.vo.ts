@@ -1,4 +1,5 @@
-import { BadRequestException } from '@nestjs/common';
+import { HashedPasswordException } from "@/core/base/exceptions/HashedPassword.exception";
+import { InvalidPasswordException } from "@/core/base/exceptions/InvalidPassword.exception";
 
 export class Password {
   private readonly _value: string;
@@ -7,9 +8,15 @@ export class Password {
     this._value = value;
   }
 
-  public static create(password: string, skipValidation: boolean = false): Password {
+  public static create(
+    password: string,
+    skipValidation: boolean = false,
+  ): Password {
     if (!password) {
-      throw new BadRequestException('Password is required');
+      throw new InvalidPasswordException(
+        'Password is required',
+        'EMPTY_PASSWORD',
+      );
     }
 
     if (!skipValidation) {
@@ -21,38 +28,60 @@ export class Password {
 
   public static createFromHash(hashedPassword: string): Password {
     if (!hashedPassword) {
-      throw new BadRequestException('Hashed password is required');
+      throw new HashedPasswordException(
+        'Hashed password is required',
+        'EMPTY_HASHED_PASSWORD',
+      );
     }
+
     return new Password(hashedPassword);
   }
 
-  private static validate(password: string): void {
+  public static validate(password: string): void {
     if (password.length < 8) {
-      throw new BadRequestException('Password must be at least 8 characters long');
+      throw new InvalidPasswordException(
+        'Password must be at least 8 characters long',
+        'INVALID_PASSWORD_LENGTH',
+      );
     }
 
     if (password.length > 128) {
-      throw new BadRequestException('Password must be less than 128 characters long');
+      throw new InvalidPasswordException(
+        'Password must be less than 128 characters long',
+        'INVALID_PASSWORD_LENGTH',
+      );
     }
 
     // At least one uppercase letter
     if (!/[A-Z]/.test(password)) {
-      throw new BadRequestException('Password must contain at least one uppercase letter');
+      throw new InvalidPasswordException(
+        'Password must contain at least one uppercase letter',
+        'PASSOWRD_VALIDATION_FAILED',
+      );
     }
 
     // At least one lowercase letter
     if (!/[a-z]/.test(password)) {
-      throw new BadRequestException('Password must contain at least one lowercase letter');
+      throw new InvalidPasswordException(
+        'Password must contain at least one lowercase letter',
+        'PASSOWRD_VALIDATION_FAILED',
+      );
     }
 
     // At least one number
     if (!/\d/.test(password)) {
-      throw new BadRequestException('Password must contain at least one number');
+      throw new InvalidPasswordException(
+        'Password must contain at least one number',
+        'PASSOWRD_VALIDATION_FAILED',
+      );
     }
 
     // At least one special character
     if (!/[@$!%*?&]/.test(password)) {
-      throw new BadRequestException('Password must contain at least one special character (@$!%*?&)');
+      throw new InvalidPasswordException(
+        'Password must contain at least one special character (@$!%*?&)',
+        'PASSOWRD_VALIDATION_FAILED',
+      );
     }
   }
 

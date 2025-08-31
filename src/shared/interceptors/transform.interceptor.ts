@@ -7,7 +7,7 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Request } from 'express';
-import { ApiResponseDto } from '@/core/application/dtos/api-response.dto';
+import { ApiResponseDto } from '@/core/controllers/dtos/api-response.dto';
 
 @Injectable()
 export class TransformInterceptor<T>

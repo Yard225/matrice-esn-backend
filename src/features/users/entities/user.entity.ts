@@ -54,7 +54,7 @@ export class User extends BaseEntity {
 
   public isResetPasswordTokenValid(token: string): boolean {
     return (
-      !!this.resetPasswordToken &&
+      !this.resetPasswordToken &&
       this.resetPasswordToken === token &&
       !!this.resetPasswordExpires &&
       this.resetPasswordExpires > new Date()
